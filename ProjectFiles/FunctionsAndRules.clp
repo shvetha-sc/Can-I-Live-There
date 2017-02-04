@@ -101,12 +101,13 @@
     ?p1 <-(parentStar {planetName == p.planetName})
     ?p3 <-(currentJudgementState {planetName == p.planetName})
     =>
-   	(if (and (= ?p3.resultsFilled TRUE) (<> ?p3.beginAnalysis TRUE))then
-    (displayWelcomeInfo)
+   (if (and (= ?p3.resultsFilled TRUE) (<> ?p3.beginAnalysis TRUE))then
+    	(displayWelcomeInfo)
  	(displayPlanetInfo ?p)  
-    (displayParentStarInfo ?p1)
-    (modify ?p3 (beginAnalysis TRUE))
-    (printout t crlf))
+    	(displayParentStarInfo ?p1)
+    	(modify ?p3 (beginAnalysis TRUE))
+    	(printout t crlf)
+    )
 )
 
 ;Rule 2 : Generate Additional Facts for further analysis
@@ -122,7 +123,7 @@
     (bind ?escapeVelocityValue (calculateEscapeVelocity ?p.mass ?p.radius))
     (modify ?p3 (escapeVelocity ?escapeVelocityValue))
     ;Density
-   	(modify ?p3 (density (calculateDensity ?p.mass ?p.radius)))
+    (modify ?p3 (density (calculateDensity ?p.mass ?p.radius)))
     ;Calculate Stellar Values
     (modify ?p2 (stellarLuminosity (calculateStellarLuminosity ?p2.stellarRadius ?p2.stellarEffTemperature)))
     ;ESI Values
@@ -130,7 +131,7 @@
     (modify ?p3 (surfaceESI (surfaceESICalc ?p3.escapeVelocity ?p.tsurf)))
     (modify ?p3 (globalESI (globalESICalc ?p.radius ?p3.density ?p3.escapeVelocity ?p.tsurf)))
     ;HZD Values
-  	(modify ?p3 (HZD (calculateHZD ?p2.stellarEffTemperature ?p2.stellarLuminosity ?p.distanceFromParentStar ?p3)))
+    (modify ?p3 (HZD (calculateHZD ?p2.stellarEffTemperature ?p2.stellarLuminosity ?p.distanceFromParentStar ?p3)))
     (modify ?p4 (resultsFilled TRUE))
 )
 
@@ -189,7 +190,7 @@
         (modify ?p2 (terrainTypeDesc "Based on its mass, the exoplanet type cannot be determined."))                  
    
     )
-    )
+)
 
 ;ESI Judgement Rules
 ;Rule 7 : Interior ESI Determination (+)
@@ -215,8 +216,8 @@
         (bind ?temp "The above interior ESI shows that the planet does not have a highly rocky interior")
         (modify ?p3 (InteriorESIDesc ?temp))
         (modify ?p3 (isInteriorESIGood FALSE))
-        )
     )
+)
 
 ;Rule 9 : Surface ESI Determination (+)
 (defrule goodSurfaceInteriorESI
@@ -228,8 +229,8 @@
         (bind ?temp "The above surface ESI shows that the planet has a temperate surface.")
         (modify ?p3 (surfaceESIDesc ?temp))
         (modify ?p3 (isSurfaceESIGood TRUE))
-        )
-    )
+     )
+)
 
 ;Rule 10 : Surface ESI Determination (-)
 (defrule badSurfaceESI
@@ -241,7 +242,7 @@
         (bind ?temp "The above surface ESI shows that the planet does not have a temperate surface.")
         (modify ?p3 (surfaceESIDesc ?temp))
         (modify ?p3 (isSurfaceESIGood FALSE))
-        )
+     )
 )
 
 ;Rule 11 :  Global  ESI Determination (+)
@@ -254,8 +255,8 @@
         (bind ?temp "The above global ESI is considered good")
         (modify ?p3 (globalESIDesc ?temp))
         (modify ?p3 (isGlobalESIGood TRUE))
-        )
-    )
+     )
+)
 
 ;Rule 12 : Global ESI Determination (-)
 (defrule badGlobalESI
@@ -267,7 +268,7 @@
         (bind ?temp "The above global ESI is not considered good")
         (modify ?p3 (globalESIDesc ?temp))
         (modify ?p3 (isGlobalESIGood FALSE))
-        )
+    )
 )
 
 
@@ -283,8 +284,8 @@
         (bind ?temp "This tells us that the planet lies within the habitable zone")
         (modify ?p3 (HZDDesc ?temp))
         (modify ?p3 (isHZDGood TRUE))
-        )
-    )
+     )
+)
 
 ;Rule 14 : HZD Determination (-)
 (defrule badHZD
@@ -296,12 +297,12 @@
         (bind ?temp "This tells us that the planet does not lie within the habitable zone")
         (modify ?p3 (HZDDesc ?temp))
         (modify ?p3 (isHZDGood FALSE))
-        )
+    )
      (if (and (> ?p2.HZD 1.1) (= ?p3.isHZDGood NONE)(= ?p3.beginAnalysis TRUE)) then        
         (bind ?temp "This tells us that the planet does not lie within the habitable zone")
         (modify ?p3 (HZDDesc ?temp))
         (modify ?p3 (isHZDGood FALSE))
-        )
+      )
 )
 
 ;Rules : Type Determination based on Planet Surface Temperature
@@ -315,8 +316,8 @@
        	(modify ?p2 (TPHCDesc "It belongs to Class M (MesoPlanet) : This category belongs to earth like planets with temperatures ranging from 0 degree C to 50 degree C." crlf))
         (modify ?p2 (TPHC "Class M"))
         (modify ?p3 (isTempGood TRUE))
-        )
-    )
+     )
+)
 
 ;Rule 16 : Planet Type : Class P
 (defrule CLASS_P
@@ -328,7 +329,7 @@
         (modify ?p2 (TPHCDesc "It belongs to Class P (Psychroplanet) : This tells us that is planet is cold with temperatures ranging from -50 degree C to 0 degree C." crlf))
    		(modify ?p2 (TPHC "Class P"))
         (modify ?p3 (isTempGood FALSE))
-        )
+    )
 )
 
 ;Rule 17 : Planet Type : Class hP
@@ -341,7 +342,7 @@
         (modify ?p2 (TPHCDesc "It belongs to Class hP (Hypopsychroplanet) : This tells us that is planet is extemely cold with temperatures lower than -50 degree C." crlf))		
         (modify ?p2 (TPHC "Class hP"))
         (modify ?p3 (isTempGood FALSE))
-        )
+     )
 )
 
 ;Rule 18 : Planet Type : Class T
@@ -354,7 +355,7 @@
        	(modify ?p2 (TPHCDesc "It belongs to Class T (Thermoplanet) : This tells us that is planet is hot with temperatures ranging from 0 degree C and 50 degree C." crlf))		
         (modify ?p2 (TPHC "Class T"))
         (modify ?p3 (isTempGood FALSE))
-        )
+    )
 )
 
 ;Rule 19 : Planet Type : Class hT
@@ -367,7 +368,7 @@
         (modify ?p2 (TPHCDesc "It belongs to Class hT (Hyperthermoplanet) : This tells us that is planet is extremely hot with temperatures above 100 degree C." crlf))		
         (modify ?p2 (TPHC "Class hT"))
         (modify ?p3 (isTempGood FALSE))
-        )
+    )
 )
 
 ;Rule 20 : This rule will be triggered when all the information in order to judge the planet type is complete
@@ -383,8 +384,8 @@
         else
             (modify ?p2 (isPotentiallyHabitable FALSE))
             (modify ?p2 (analysisComplete TRUE))
-        )
-    )
+         )
+     )
 )
 
 
@@ -417,17 +418,13 @@
         (printout t ?p2.HZDDesc crlf)
         (decorator "Thermal Planetary Habitability Classification (T-PHC)")
         (printout t "This represents the potential habitable exoplanets based on their mean global surface temperature" crlf)
-	   	(printout t ?p3.TPHCDesc)
+	(printout t ?p3.TPHCDesc)
        	(modify ?p2 (judgementComplete TRUE))
         
         )	
     )
-
-;Rule 22 : This will also display the formatted output to the user
-
-
-
-;Rule 23 : Final Judgment Positive
+    
+;Rule 22 : Final Judgment Positive
 (defrule FinalJudgement
      ?p <-(planet (planetName ?planetName))
     ?p2 <-(currentJudgementState {planetName == p.planetName})
@@ -445,9 +442,7 @@
   )
 )
 
-
-(run)
-;(facts)	
+(run)	
 (reset)
 (clear)
 (exit)
